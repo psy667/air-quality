@@ -5,6 +5,7 @@
 #include <LiquidCrystal.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 
 //#define BME_SCK 18
 //#define BME_MISO 19
@@ -48,9 +49,19 @@ byte Two[] = {
   B00000,
 };
 
+byte Cube[] = {
+  B11110,
+  B00010,
+  B01110,
+  B00010,
+  B11110,
+  B10000,
+  B00100,
+  B00000,
+};
+
+
 LiquidCrystal lcd(33, 32, 13, 12, 14, 27);
-lcd.clear();
-lcd.print("Initilization");
 
 //Adafruit_BME280 bme; // I2C
 Adafruit_BME280 bme(BME_CS); // hardware SPI
@@ -61,10 +72,7 @@ Adafruit_BME280 bme(BME_CS); // hardware SPI
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-#define TEMP_TOPIC "esp32/temp"
-#define HUM_TOPIC "esp32/hum"
-#define CO2_TOPIC "esp32/co2"
-#define PM2_TOPIC "esp32/pm2"
+
 
 unsigned long delayTime = 4000;
 
@@ -76,9 +84,17 @@ const char* password = "perforator";
 
 const char* mqtt_server = "ovz1.arseniyoguzov.n03kn.vps.myjino.ru";
 int mqtt_port = 49352;
+const char* device_id = "2f0d295f-9cf5-4959-897a-7b7970dae938";
+
+char temp_topic [50];
+char hum_topic [50];
+char co2_topic [50];
+char pm2_topic [50];
+
 
 float temperature = 0;
 float humidity = 0;
+float pm2 = 0;
 unsigned long CO2 = 0;
 
 void setup() {
@@ -112,6 +128,7 @@ void setup() {
     lcd.createChar(0, Celsius);
     lcd.createChar(1, Humidity);
     lcd.createChar(2, Two);
+    lcd.createChar(3, Cube);
     lcd.clear();
     
     // </LCD>
@@ -139,25 +156,30 @@ void printValues() {
     temperature = bme.readTemperature();
     humidity = bme.readHumidity();
     
-    
-    
     lcd.clear();
     lcd.print("t ");
     lcd.print(temperature, 1);
     lcd.write(byte(0));
-    lcd.print("    ");
-
-    lcd.write(byte(1));
     lcd.print(" ");
-    lcd.print(humidity, 0);
-    lcd.print("%");
-    
-    lcd.setCursor(0, 1);
 
     lcd.print("CO");
     lcd.write(byte(2));
     lcd.print(String(CO2));
     lcd.print("ppm");
+    
+    lcd.setCursor(0, 1);
+
+    lcd.write(byte(1));
+    lcd.print(" ");
+    lcd.print(humidity, 0);
+    lcd.print("%");
+
+    lcd.print("   ");
+
+    lcd.print("PM2.5 ");
+    lcd.print(pm2, 0);
+    lcd.print("ug/m");
+    lcd.write(byte(0));
     
     Serial.print("Temperature:");
     Serial.print(temperature);
@@ -169,6 +191,10 @@ void printValues() {
     
     Serial.print("CO2:");
     Serial.print(String(CO2));
+    Serial.print(", ");
+
+    Serial.print("PM2.5:");
+    Serial.print(String(pm2));
     
     Serial.println();
 
@@ -183,10 +209,23 @@ void printValues() {
     char co2String[8];
     dtostrf(CO2, 1, 2, co2String);
 
+    char pm2String[8];
+    dtostrf(pm2, 1, 2, pm2String);
 
-    client.publish(TEMP_TOPIC, tempString);
-    client.publish(HUM_TOPIC, humString);
-    client.publish(CO2_TOPIC, co2String);
+
+
+    StaticJsonDocument<256> doc;
+
+    
+    doc["temperature"] = tempString;
+    doc["humidity"] = humString;
+    doc["co2"] = co2String;
+    doc["pm2"] = pm2String;
+
+    char out[128];
+    serializeJson(doc, out);
+    
+    client.publish(device_id, out);
 }
 
 void requestCO2 ()
