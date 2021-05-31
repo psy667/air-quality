@@ -1,21 +1,26 @@
 import {Controller, Get, Param} from '@nestjs/common';
-import { AppService } from './app.service';
+import {AppService} from './app.service';
 import {Ctx, MessagePattern, MqttContext, Payload} from '@nestjs/microservices';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {type} from 'os';
-import {Column} from 'typeorm';
-import {Measurement} from './entities/measurement.entity';
+import {Measurement} from './measurement.entity';
 
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('')
+  mainPage() {
+    return 'All ok!';
+  }
 
-  @Get('history/:deviceId')
-  getHello(@Param('deviceId') deviceId) {
+  @Get('api/getHistory/:deviceId/:frequency')
+  getHistory(@Param('deviceId') deviceId, @Param('frequency') frequency) {
+    return this.appService.getMeasurementsHistory(deviceId, frequency);
+  }
 
-    return this.appService.getMeasurementsHistory(deviceId);
+  @Get('api/getCurrentValue/:deviceId')
+  getCurrentValue(@Param('deviceId') deviceId) {
+    return this.appService.getCurrentValue(deviceId,);
   }
 
   @MessagePattern('+')
@@ -26,3 +31,4 @@ export class AppController {
   }
 
 }
+

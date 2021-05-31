@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {MeasurementEntity} from './entities/measurement.entity';
+import {MeasurementEntity} from './measurement.entity';
 import {ClientsModule, Transport} from '@nestjs/microservices';
 
 
@@ -13,7 +13,7 @@ const entities = [MeasurementEntity];
   imports: [
       TypeOrmModule.forRoot({
         type: 'postgres',
-        host: 'kek.psy667.com',
+        host: 'ovz1.arseniyoguzov.n03kn.vps.myjino.ru',
         port: 49387,
         username: 'postgres',
         password: 'pass123',
@@ -25,7 +25,7 @@ const entities = [MeasurementEntity];
       }),
       ClientsModule.register([
         {
-          name: 'MATH_SERVICE',
+          name: 'MQTT_SERVICE',
           transport: Transport.MQTT,
           options: {
             url: 'mqtt://ovz1.arseniyoguzov.n03kn.vps.myjino.ru:49352',
@@ -33,19 +33,6 @@ const entities = [MeasurementEntity];
         },
       ]),
       TypeOrmModule.forFeature(entities)
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule.forRoot()],
-    //   useFactory: (config: ConfigService) => config.get('database') as ReturnType<typeof appConfig>["database"],
-    //   inject: [ConfigService],
-    // }),
-    // ConfigModule.forRoot({
-    //   validationSchema: Joi.object({
-    //     DATABASE_HOST: Joi.required(),
-    //     DATABASE_PORT: Joi.number().default(process.env.DATABASE_PORT),
-    //   }),
-    //   load: [appConfig]
-    // }),
-    // MeasurementModule
   ],
   controllers: [AppController],
   providers: [AppService],

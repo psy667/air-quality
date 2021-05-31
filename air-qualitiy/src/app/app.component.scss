@@ -1,0 +1,92 @@
+$green-light: #E3F3EE;
+$green: #61AC9A;
+$red-light: #F5E6E8;
+$red: #D87177;
+$yellow-light: #F7EFE6;
+$yellow: #E19753;
+
+.main-page {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  margin: 30px;
+
+  .tui-text_h4 {
+    grid-column: span 5;
+    margin: 0;
+  }
+
+  .icon-info {
+    grid-column: span 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .radiolist {
+    grid-column: span 6;
+  }
+
+  .tui-text_h5 {
+    grid-column: span 6;
+  }
+
+  .value {
+    grid-column: span 3;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    padding: 30px 10px;
+    border-radius: 5px;
+    b {
+      text-align: center;
+      display: block;
+      font-size: 24px;
+    }
+    span {
+      text-align: center;
+      display: block;
+      font-size: 14px;
+    }
+    &.green {
+      background: $green-light;
+      color: $green;
+    }
+
+    &.yellow {
+      background: $yellow-light;
+      color: $yellow;
+    }
+
+    &.red {
+      background: $red-light;
+      color: $red;
+    }
+  }
+
+  .chart {
+    grid-column: span 6;
+    height: 274px;
+    div:not(.tui-text_h6) {
+      height: 250px;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .main-page {
+    grid-template-columns: repeat(12, 1fr);
+
+    .tui-text_h4 {
+      grid-column: span 11;
+    }
+
+    .radiolist {
+      grid-column: span 12;
+    }
+
+    .tui-text_h5 {
+      grid-column: span 12;
+    }
+  }
+}

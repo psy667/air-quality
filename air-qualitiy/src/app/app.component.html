@@ -1,0 +1,44 @@
+<tui-root>
+  <div class="main-page">
+    <h2 class="tui-text_h4">Состояние воздуха</h2>
+    <ng-container *ngIf="currentValues$ | async as currentValues">
+      <h2 class="tui-text_h5">В помещении</h2>
+
+      <div class="value" *ngFor="let currentValue of currentValues" [ngClass]="currentValue.status">
+        <b>{{currentValue.value}}{{currentValue.unit}}</b>
+        <span>{{currentValue.title}}</span>
+      </div>
+    </ng-container>
+    <form [formGroup]="frequencyForm" class="radiolist">
+      <tui-radio-list
+              formControlName="value"
+              [orientation]="radiolistOrientation"
+              [items]="frequencyItems"
+              [itemContent]="tariff2ItemContent"
+      ></tui-radio-list>
+    </form>
+    <ng-template #tariff2ItemContent let-data>
+      {{data.name}}
+    </ng-template>
+
+
+    <ng-container *ngIf="charts$ | async as charts">
+      <div class="chart">
+        <div class="tui-text_h6">Температура</div>
+        <div echarts [options]="charts.temperature"></div>
+      </div>
+      <div class="chart">
+        <div class="tui-text_h6">Влажность</div>
+        <div echarts [options]="charts.humidity"></div>
+      </div>
+      <div class="chart">
+        <div class="tui-text_h6">CO2</div>
+        <div echarts [options]="charts.co2"></div>
+      </div>
+      <div class="chart">
+        <div class="tui-text_h6">PM2.5</div>
+        <div echarts [options]="charts.pm2"></div>
+      </div>
+    </ng-container>
+  </div>
+</tui-root>
