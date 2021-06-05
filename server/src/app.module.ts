@@ -13,8 +13,8 @@ const entities = [MeasurementEntity];
   imports: [
       TypeOrmModule.forRoot({
         type: 'postgres',
-        host: 'ovz1.arseniyoguzov.n03kn.vps.myjino.ru',
-        port: 49387,
+        host: 'localhost',
+        port: 5432,
         username: 'postgres',
         password: 'pass123',
         database: 'postgres',
@@ -28,7 +28,7 @@ const entities = [MeasurementEntity];
           name: 'MQTT_SERVICE',
           transport: Transport.MQTT,
           options: {
-            url: 'mqtt://ovz1.arseniyoguzov.n03kn.vps.myjino.ru:49352',
+            url: 'mqtt://localhost:1883',
           }
         },
       ]),

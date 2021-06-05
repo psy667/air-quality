@@ -19,7 +19,7 @@ export class MeasurementService {
   ) {
     timer(0,4000).pipe(
         switchMap(() => {
-            return this.httpClient.get(`http://192.168.0.11:3000/api/getCurrentValue/${this.deviceId}`)
+            return this.httpClient.get(`http://localhost:3000/api/getCurrentValue/${this.deviceId}`)
         })
     ).subscribe((result) => {
         this.currentValues$$.next(result as Measurement);
@@ -27,7 +27,7 @@ export class MeasurementService {
 
     combineLatest([this.frequency$, timer(0,4000)]).pipe(
         switchMap(([frequency, _]) => {
-            return this.httpClient.get(`http://192.168.0.11:3000/api/getHistory/${this.deviceId}/${frequency}`)
+            return this.httpClient.get(`http://localhost:3000/api/getHistory/${this.deviceId}/${frequency}`)
         })
     ).subscribe((result) => {
       this.historyValues$$.next(result as MeasurementHistory);
